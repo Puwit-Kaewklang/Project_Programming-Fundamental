@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Data</title>
+    <style>
+        /* สไตล์พื้นฐาน */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f8f9fa; }
+        
+        /* แถบด้านบน (Navigation Bar) */
+        .navbar {
+            background-color: #343a40;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar a {
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            text-align: center;
+            transition: 0.3s;
+            border-radius: 5px;
+            margin: 0 5px;
+        }
+
+        .navbar a:hover {
+            background-color: #495057;
+        }
+
+        .navbar a.active {
+            background-color: #28a745;
+        }
+
+        /* ส่วนเนื้อหา */
+        .container { padding: 40px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f4f4f4; color: #333; }
+        
+        .action-bar { display: flex; justify-content: space-between; align-items: center; }
+        button { padding: 10px 20px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold; }
+        button:hover { background: #218838; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="Customer.html" class="active">ข้อมูลลูกค้า</a>
+        <a href="Freelance.html">ข้อมูลฟรีแลนซ์</a>
+        <a href="Job_DashBoard.html">งาน</a>
+        <a href="Job_Analytic.html">สรุปงาน</a>
+        <a href="Ranking.html">อันดับฟรีแลนซ์</a>
+        <a href="reports.html">รายงานสรุป</a>
+    </nav>
+
+    <div class="container">
+        <div class="action-bar">
+            <h1>รายชื่อลูกค้าทั้งหมด</h1>
+            <button onclick="fetchCustomers()">🔄 ดึงข้อมูลล่าสุด</button>
+        </div>
+
+        <table id="customerTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ชื่อ</th>
+                    <th>นามสกุล</th>
+                    <th>เพศ</th>
+                    <th>อีเมล</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function fetchCustomers() {
+            try {
+                // เรียกไปยัง API ของคุณ
+                const response = await fetch('http://127.0.0.1:8000/All-Customer-Data');
+                const data = await response.json();
+
+                const tableBody = document.querySelector('#customerTable tbody');
+                tableBody.innerHTML = ''; 
+
+                data.forEach(customer => {
+                    const row = `<tr>
+                        <td>${customer.Customer_id}</td>
+                        <td>${customer.Customer_FirstName}</td>
+                        <td>${customer.Customer_LastName}</td>
+                        <td>${customer.Customer_Gender}</td>
+                        <td>${customer.Customer_Email}</td>
+                    </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                alert('ไม่สามารถเชื่อมต่อ API ได้ (เช็คว่ารัน uvicorn หรือยัง?)');
+            }
+        }
+    </script>
+</body>
+</html>
