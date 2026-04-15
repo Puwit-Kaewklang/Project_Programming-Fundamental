@@ -6,7 +6,7 @@ from fastapi import FastAPI , HTTPException , Request ,Depends
 from pydantic import BaseModel
 import requests
 import json
-from sqlalchemy import create_engine , text
+from sqlalchemy import create_engine , text , Date
 from sqlalchemy.orm import sessionmaker , Session
 
 load_dotenv()
@@ -88,3 +88,35 @@ def job_analytic(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=400 , detail=str(e))
     return result.mappings().all()
+
+class upload_job(BaseModel):
+    Job_id: str
+    Job_Name: str
+    Posted_On: str = Date
+    Deadline: str = Date
+    Customer_id: str
+    Status: str
+    Type: str
+    Brief: str
+    Budget: float
+    Requirement_Skill: str
+    
+@job.post("/Post-Job")
+def post_job(data: upload_job , db: Session = Depends(get_db)):
+    try:
+        status = text("""SELECT Status_id FROM status WHERE Status_Of_Job = :sj""")
+        result_status = db.execute(status , {"sj": data.Status}).fetchone()
+        
+        type = text("""SELECT Type_id FROM job_type WHERE Type_Of_Job = :tj""")
+        result_type = db.execute(type , {"tj":data.Type}).fetchone()
+        
+        job = text("""INSERT INTO job VALUES (:jid , :jn , :p , :sid , :cid , :tid)""")
+        db.execute(job , {"jid":data.Job_id , "jn":data.Job_Name , "p":data.Posted_On , "sid":result_status[0] , "cid":data.Customer_id , "tid":result_type[0]})
+        
+        detail = text("""INSERT INTO detail VALUES (:djid , :dl , :b , :bg , :rs)""")
+        db.execute(detail , {"djid":data.Job_id , "dl":data.Deadline , "b":data.Brief , "bg":data.Budget , "rs":data.Requirement_Skill})
+        db.commit()
+    except Exception as e:
+        raise HTTPException(status_code=400 , detail=str(e))
+    
+    return f"Done Uploading"
