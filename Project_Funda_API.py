@@ -1,7 +1,7 @@
 import pymysql
 import os
 from dotenv import load_dotenv
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware #Nessessory library for frontend
 from fastapi import FastAPI , HTTPException , Request ,Depends
 from pydantic import BaseModel
 import requests
@@ -11,12 +11,15 @@ from sqlalchemy.orm import sessionmaker , Session
 
 load_dotenv()
 job = FastAPI()
+
+#======= To allow Webpage use API =========
 job.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], 
     allow_methods=["*"],
     allow_headers=["*"],
 )
+#===========================================
 
 engine = create_engine(
     f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}" ,
