@@ -12,7 +12,7 @@
 - DB_NAME=(Your Schema Name)
 
 # Optional
-### Extendtion in Visual studio code (For Frontend)
+### Extension in Visual studio code (For Frontend)
 1. Live Server(Five Server)
 2. Auto Rename Tag
 3. Highlight Matching Tag
