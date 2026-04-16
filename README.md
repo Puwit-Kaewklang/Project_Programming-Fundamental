@@ -5,6 +5,12 @@
 # How to Install library
 - pip install -r requirements.txt
 
+# Create file .env and Declare these variables
+- DB_HOST=(Your DB Host)
+- DB_USER=(Your DB User)
+- DB_PASS=(Your DB Password)
+- DB_NAME=(Your Schema Name)
+
 # Optional
 ### Extendtion in Visual studio code (For Frontend)
 1. Live Server(Five Server)
